@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <meta charset="UTF-8">
+        <style>
+            html, body{
+                margin: 0;
+                padding: 0;
+                height: 100%;
+            }
+            .container{
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
+                width: 100%;
+            }
+            .row{
+                display: flex;
+            }
+
+            .top-row{
+                display: flex;
+                flex-direction: row;
+                color: white;
+                flex: 1;
+            }
+            .header-box{
+                display: flex;
+                flex: 1;
+                justify-content: center;
+                align-items: center;
+                background-color: blue;
+            }
+            .menu-box{
+                display: flex;
+                flex: 3;
+                justify-content: center;
+                align-items: center;
+                background-color: purple;
+            }
+
+            .hero-row{
+                display: flex;
+                flex: 3;
+                justify-content: center;
+                align-items: center;
+                color: white;
+                background-color: cyan;
+            }
+
+            .content-row{
+                display: grid;
+                grid-template-columns: 2fr 1fr 1fr;
+                grid-template-rows: 1fr 1fr;
+                color: white;
+                flex: 4;
+            }
+            .main-box{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                grid-row: 1 / 3;
+                background-color: green;
+            }
+            .empty-box{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                grid-row: 1 / 3;
+                background-color: white;
+            }
+            .image-box{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                grid-row: 1 / 2;
+                background-color: brown;
+            }
+            .extra-box{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                grid-row: 2 / 3;
+                background-color: orange;
+            }
+
+            .banner-row{
+                display: flex;
+                flex: 1;
+                justify-content: center;
+                align-items: center;
+                color: white;
+                background-color: red;
+            }
+
+
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row top-row">
+                <div class="header-box">HEADER</div>
+                <div class="menu-box">MENU</div>
+            </div>
+
+            <div class="row hero-row">
+                HERO
+            </div>
+
+            <div class="row content-row">
+                <div class="main-box">MAIN</div>
+                <div class="empty-box"></div>
+                <div class="image-box">IMAGE</div>
+                <div class="extra-box">EXTRA</div>
+            </div>
+
+            <div class="row banner-row">BANNER</div>
+        </div>
+    </body>
+</html>
