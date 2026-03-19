@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <style>
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 3px solid black;
+            border-radius: 12px;
+            border-bottom: 6px solid black;
+            border-right: 6px solid black;
+            padding: 10px 20px;
+        }
+
+        .navbar__logo{
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar__menu{
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar__text{
+            font-size: 16px;
+            color: grey;
+        }
+
+        .navbar__text--highlight{
+            color: orange;
+            font-weight: bold;
+        }
+
+        .navbar__actions{
+            display: flex;
+            align-items: center;
+            padding: 4px;
+            border-radius: 12px;
+            border: 1px solid lightgrey;
+            gap: 5px;
+        }
+
+        .navbar__label{
+            font-size: 12px;
+            color: grey;
+        }
+
+        .navbar__toggle{
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .navbar__lang-btn{
+            padding: 4px 12px;
+            border-radius: 12px;
+            background-color: white;
+            color: grey;
+            cursor: pointer;
+        }
+
+        .navbar__lang-btn--active{
+            background-color: orange;
+            color: white;
+        }
+
+        @media (max-width: 800px){
+            .navbar__label{
+                display:none;
+            }
+        }
+        @media(max-width: 600px){
+            .navbar__menu{
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="navbar__logo">
+            <img src="https://loremflickr.com/40/40/cat" alt="Logo">
+            <span>Aido</span>
+        </div>
+
+        <div class="navbar__menu">
+            <span class="navbar__text">고양이 친구들</span>
+            <span class="navbar__text navbar__text--highlight">앱 다운로드</span>
+        </div>
+
+        <div class="navbar__actions">
+            <span class="navbar__label">언어</span>
+            <div class="navbar__toggle">
+                <button class="navbar__lang-btn navbar__lang-btn--active">KO</button>
+                <button class="navbar__lang-btn">EN</button>
+            </div>
+        </div>
+    </nav>
+</body>
+
+</html>
