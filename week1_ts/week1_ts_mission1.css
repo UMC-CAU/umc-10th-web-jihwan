@@ -1,0 +1,129 @@
+/* 기본 마진/패딩 제거 */
+*{ box-sizing: border-box;
+    margin: 0;
+  padding: 0;
+}
+
+/* 전체 화면 배경 색, 폰트 설정하기, 앱 중앙 정렬하기 */
+body{
+    background-color: #aeacac;
+    font-family: Arial, sans-serif;
+    justify-content: center;
+    padding: 50px;
+    display: flex;
+}
+
+/* 메인 바탕화면 */
+.todo-app{
+    width: 100%;
+    max-width: 800px;
+    background-color: white;
+    padding: 30px;
+    border-radius: 10px;
+}
+
+
+.todo-app__header{
+    display: flex;
+    margin-bottom: 20px;
+}
+
+.todo-app__content{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* 입력 창 스타일입니다 */
+.todo-app__inputbox{
+    margin-bottom: 30px;
+    display: flex;
+    align-items : center;
+    margin-bottom: 20px;
+}
+/* 입력 박스 */
+.todo-app__input{
+    flex:1;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+/* 할 일 추가 버튼 스타일 */
+.todo-app__add-btn {
+    padding: 10px 15px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 5px;
+    font-size: 16px;
+}
+
+/*할일 한일 칸 좌우 반반 나란히 보이게 */
+.todo-app__board{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+/* 할일 칸 */
+.todo-app__itembox--todo{
+    flex: 1;
+}
+/* 한일 칸 */
+.todo-app__itembox--done{
+    flex: 1;
+}
+
+
+/* 아이템박스 */
+.todo-app__itembox{
+    display: flex;
+    flex-direction: column;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+
+}
+/* 아이템박스 안 글씨 */
+.todo-app__itembox h2{
+    text-align: center;
+    font-size: 20px;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+
+
+
+/* 리스트 아이템 내부 버튼들 */
+.todo-list__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/* 초록색 완료 버튼 */
+.todo-list__btn--complete {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+/* 빨간색 삭제 버튼 */
+.todo-list__btn--delete {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
