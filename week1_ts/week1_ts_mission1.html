@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- // css 파일 업로드 -->
+    <link rel="stylesheet" href="week1_ts_mission1.css">
+    <!-- // js 파일 업로드 -->
+    <script type="module" src="./dist/week1_ts_mission1.js" defer></script>
+</head>
+<body>
+    <main class="todo-app">
+        <!-- 헤더 부분입니다 -->
+        <header class="todo-app__header"><h1>UMC STUDY PLAN</h1></header>
+
+        <!-- 컨텐츠가 있는 부분 -->
+        <section class ="todo-app__content">
+            
+            <!-- 스터디 계획을 입력하는 박스입니다 -->
+            <section class="todo-app__inputbox">
+                <input type="text" class ="todo-app__input" placeholder="스터디 계획을 작성해보세요" required>
+                <button id="add-btn" class="todo-app__add-btn">할 일 추가</button>
+            </section>
+
+            <!-- 입력된 계획이 보이는 부분입니다 -->
+            <section class="todo-app__board">
+                
+                <!-- 해야 될 일 모인 부분 -->
+                <section class="todo-app__itembox todo-app__itembox--todo"><h2>해야 할 일</h2><ul class="todo-list"></ul></section>
+                <!-- 해낸 일 모인 부분 -->
+                <section class="todo-app__itembox todo-app__itembox--done"><h2>해낸 일</h2><ul class="todo-list"></ul></section>
+
+            </section>
+
+        </section>
+    </main>
+    <script src="./dist/week1_ts_mission1.js"></script>
+</body>
+</html>
