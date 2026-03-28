@@ -1,4 +1,6 @@
-import { createContext, type PropsWithChildren, useContext, useState } from "react";
+//앱 전체에 테마 theme 데이터와 그 테마를 바꾸는 함수(toggleTheme)를 만들고 관리함
+
+import { createContext, type PropsWithChildren, useContext, useState, useEffect } from "react";
 
 // 테마는 오직 LIGHT 와 DARK 두 가지만 존재한다
 export enum THEME {
@@ -21,7 +23,17 @@ export const ThemeContext = createContext<IThemeContext | undefined>(undefined);
 // 데이터를 관리하고 자식들에게 뿌려주는 핵심 로직
 export const ThemeProvider = ({ children }: PropsWithChildren) => {
     // 현재 어떤 테마인지 기억하는 데이터 저장소, 기본값은 라이트 모드
-  const [theme, setTheme] = useState<TTheme>(THEME.LIGHT);
+    // 저장된 값이 있으면 그걸 쓰고 없으면 기본값인 LIGHT를 쓴다
+  const [theme, setTheme] = useState<TTheme>(() => {
+    const savedTheme = localStorage.getItem('app-theme') as TTheme;
+    return savedTheme || THEME.LIGHT
+  });
+  
+  // theme 상태가 변경될 때 로컬 스토리지 업데이트
+  useEffect(()=> {
+    localStorage.setItem('app-theme', theme);
+  }, [theme]);
+
 
   // 현재 상태가 LIGHT면 DARK로, 반대면 반대로 바꿔주는 삼항 연산자 로직
   const toggleTheme = () => {

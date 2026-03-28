@@ -1,3 +1,5 @@
+//화면 상단 바 구성
+
 import { THEME, useTheme } from './ThemeProvider'
 import ThemeToggleButton from "./ThemeToggleButton";
 import clsx from 'clsx';
