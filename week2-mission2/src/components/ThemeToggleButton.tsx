@@ -1,5 +1,6 @@
-import React from 'react'
-import { THEME, useTheme } from './ThemeProvider'
+// 사용자가 클릭해서 테마를 바꿀 수 있는 버튼 컴포넌트
+
+import { THEME, useTheme } from '../context/ThemeProvider'
 import clsx from 'clsx';
 
 export default function ThemeToggleButton() {

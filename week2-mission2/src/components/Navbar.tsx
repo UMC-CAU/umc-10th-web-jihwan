@@ -1,6 +1,6 @@
 //화면 상단 바 구성
 
-import { THEME, useTheme } from './ThemeProvider'
+import { THEME, useTheme } from '../context/ThemeProvider'
 import ThemeToggleButton from "./ThemeToggleButton";
 import clsx from 'clsx';
 

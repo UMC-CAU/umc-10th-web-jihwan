@@ -1,5 +1,7 @@
+// 본문 내용 구성
+
 import clsx from "clsx";
-import {THEME, useTheme} from './ThemeProvider'
+import {THEME, useTheme} from '../context/ThemeProvider'
 
 export default function ThemeContent() {
   const {theme, toggleTheme} = useTheme();
