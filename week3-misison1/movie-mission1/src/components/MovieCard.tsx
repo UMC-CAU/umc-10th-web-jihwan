@@ -22,13 +22,13 @@ export default function MovieCard({ movie }: MovieCardProps) {
         onMouseEnter={():void => setIsHovered(true)}
         onMouseLeave={():void => setIsHovered(false)}
         >
-        // 영화 포스터 이미지: TMDB API에서 제공하는 이미지 URL을 사용해서 영화 포스터를 보여준다
+         {/* 영화 포스터 이미지: TMDB API에서 제공하는 이미지 URL을 사용해서 영화 포스터를 보여준다 */}
       <img 
         src={`https://image.tmdb.org/t/p/w200${movie.poster_path}`} 
         alt={'${movie.title} 영화의 이미지'}
         className=''
         />
-        // 마우스가 카드 위에 있을 때 상세 정보창을 띄운다
+        {/* // 마우스가 카드 위에 있을 때 상세 정보창을 띄운다 */}
         {isHovered && (
             <div className='absolute inset-0 bg-linear-to-t from-black/50 
             to-transparent backdrop-blur-md text-white items-ceenter p-4'>
