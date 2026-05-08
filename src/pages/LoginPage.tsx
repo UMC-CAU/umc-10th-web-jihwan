@@ -7,9 +7,9 @@ import { useEffect } from "react";
 const LoginPage = () => {
   const { login, accessToken } = useAuth();
   const navigate = useNavigate();
-  const location = useLocation(); // ✅ 현재 위치 정보 가져오기
+  const location = useLocation(); //  현재 위치 정보 가져오기
 
-  // ✅ 1. 이전 페이지 정보(from) 추출 (없으면 홈으로)
+  // 1. 이전 페이지 정보(from) 추출 (없으면 홈으로)
   const from = location.state?.from?.pathname || "/";
 
   useEffect(() => {
@@ -30,7 +30,7 @@ const LoginPage = () => {
   const handleSubmit = async () => {
     try {
       await login(values);
-      // ✅ 2. 로그인 함수 실행 후, accessToken이 업데이트되면 useEffect가 감지하여 'from'으로 이동시킵니다.
+      //  2. 로그인 함수 실행 후, accessToken이 업데이트되면 useEffect가 감지하여 'from'으로 이동시킵니다.
       // 만약 AuthContext에서 직접 window.location.href를 쓰고 있다면 navigate가 안 먹힐 수 있으니 
       // Context 쪽의 이동 코드를 확인해보세요!
     } catch (error) {

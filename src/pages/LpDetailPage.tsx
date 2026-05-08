@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useGetLpDetail } from "../hooks/queries/useGetLpDetail"; // 👈 경로 확인 (Detail 전용 훅)
+import { useGetLpDetail } from "../hooks/queries/useGetLpDetail"; 
 
 const LpDetailPage = () => {
   const { lpid } = useParams();
@@ -32,7 +32,7 @@ const LpDetailPage = () => {
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gray-500 rounded-full overflow-hidden"></div>
             <div>
-              <p className="text-white font-bold">오타니안</p>
+              <p className="text-white font-bold">지환</p>
               <p className="text-gray-400 text-xs">1일 전</p>
             </div>
           </div>

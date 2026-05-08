@@ -28,8 +28,8 @@ const protectedRoutes: RouteObject[] = [{
   element: <ProtectedLayout/>,
   errorElement: <NotFoundPage/>,
   children:[
-    { path:"mypage", element: <MyPage/> }, // ✅ 1. 여기에 쉼표(,)가 있어야 합니다!
-    { path: "lp/:lpid", element: <LpDetailPage /> } // ✅ 2. 상세 페이지 보호 라우트로 이동 완료
+    { path:"mypage", element: <MyPage/> }, 
+    { path: "lp/:lpid", element: <LpDetailPage /> }
   ]
 }];
 

@@ -4,12 +4,12 @@ import { Link } from "react-router-dom";
 
 const HomePage = () => {
   const [search, setSearch] = useState<string>("");
-  // ✅ 정렬 상태 추가 (최신순: desc, 오래된순: asc)
+  //  정렬 상태 추가 (최신순: desc, 오래된순: asc)
   const [order, setOrder] = useState<'desc' | 'asc'>('desc');
 
   const { data, isPending } = useGetLPList({
     search,
-    order, // ✅ 정렬 상태 전달
+    order, //  정렬 상태 전달
     limit: 10,
     cursor: 0,
   });
@@ -43,7 +43,7 @@ const HomePage = () => {
         </div>
       </div>
 
-      {/* ✅ 카드 그리드 레이아웃 */}
+      {/*  카드 그리드 레이아웃 */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
         {data?.data.data.map((lp) => (
           <Link 

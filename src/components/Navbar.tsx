@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-// ✅ 이미지 파일 임포트 (경로가 src/assets/hamburger-button.svg 인지 확인하세요!)
 import hamburgerIcon from "../assets/hamburger-button.svg";
 
 const Navbar = () => {
@@ -21,7 +20,7 @@ const Navbar = () => {
           
           {/* --- 왼쪽 영역: 햄버거 버튼 & 로고 --- */}
           <div className="flex items-center space-x-4">
-            {/* ✅ 모바일에서만 보이는 햄버거 버튼 (md:hidden) */}
+            {/*  모바일에서만 보이는 햄버거 버튼 (md:hidden) */}
             <button 
               onClick={toggleSidebar}
               className="md:hidden p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
@@ -68,7 +67,7 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* --- ✅ 사이드바 (모바일용) --- */}
+      {/* ---  사이드바 (모바일용) --- */}
       {/* 배경 딤 처리 (어둡게 변하는 부분) */}
       <div 
         className={`fixed inset-0 bg-black/50 z-30 transition-opacity duration-300 md:hidden ${

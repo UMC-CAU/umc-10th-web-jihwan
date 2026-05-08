@@ -13,7 +13,7 @@ const ProtectedLayout = () => {
   }, [accessToken]);
 
   if (!accessToken) {
-    // ✅ state에 현재 위치(from)를 담아서 로그인 페이지로 보냅니다.
+    //  state에 현재 위치(from)를 담아서 로그인 페이지로 보냅니다.
     return <Navigate to="/login" replace state={{ from: location }} />;
   }
 
