@@ -1,3 +1,4 @@
+// src/types/lp.ts
 import type { CursorBasedResponse } from "./common.ts";
 
 export type Tag = {
