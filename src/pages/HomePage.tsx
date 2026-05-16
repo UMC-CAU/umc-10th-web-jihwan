@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useInView } from "react-intersection-observer"; 
 import { useGetLPInfiniteList } from "../hooks/queries/useGetLpList.ts";
+import LpCreateModal from "../components/LpCreateModal.tsx";
+
 
 //  로딩용 스켈레톤 컴포넌트
 const LpCardSkeleton = () => (
@@ -11,6 +13,7 @@ const LpCardSkeleton = () => (
 const HomePage = () => {
   const [search, setSearch] = useState<string>("");
   const [order, setOrder] = useState<'desc' | 'asc'>('desc');
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   // 무한 스크롤 훅 호출
   const { 
@@ -82,6 +85,16 @@ const HomePage = () => {
 
       {/*  관찰 대상 (바닥) */}
       <div ref={ref} className="h-20" />
+      {/*  우측 하단 고정 플로팅 + 버튼 */}
+      <button 
+        onClick={() => setIsModalOpen(true)}
+        className="fixed bottom-6 right-6 w-14 h-14 bg-pink-500 hover:bg-pink-600 text-white rounded-full flex items-center justify-center text-3xl font-bold shadow-2xl transition-transform hover:scale-110 z-40 cursor-pointer"
+      >
+        +
+      </button>
+
+      {/*  LP 생성 모달 컴포넌트 연결 */}
+      <LpCreateModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );
 };

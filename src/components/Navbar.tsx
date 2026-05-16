@@ -1,16 +1,51 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query"; // 👈 추가
 import { useAuth } from "../context/AuthContext";
 import hamburgerIcon from "../assets/hamburger-button.svg";
 
 const Navbar = () => {
   const { accessToken, user } = useAuth();
+  const queryClient = useQueryClient(); // 👈 추가
   
-  // ✅ 사이드바 열림/닫힘 상태 관리
+  // 사이드바 열림/닫힘 상태 관리
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  // 로그아웃 Mutation 구현 (안전한 세션 파괴 및 리다이렉트)
+  const { mutate: handleLogout } = useMutation({
+    mutationFn: async () => {
+      return true;
+    },
+    onSuccess: () => {
+      // 1. 로컬스토리지 토큰 삭제
+      localStorage.removeItem("accessToken");
+
+      // 2. TanStack Query 캐시 전체 폭파 (보안 및 데이터 혼선 방지)
+      queryClient.clear();
+
+      alert("로그아웃 되었습니다.");
+      
+      // 3. 브라우저 세션 강제 리프레시 이동 (전역 상태 원천 초기화)
+      window.location.href = "/login";
+    },
+    onError: (error) => {
+      console.error("로그아웃 에러:", error);
+      localStorage.removeItem("accessToken");
+      queryClient.clear();
+      window.location.href = "/login";
+    }
+  });
+
+  // 로그아웃 확인 컨펌창 트리거
+  const onLogoutClick = () => {
+    if (window.confirm("로그아웃 하시겠습니까?")) {
+      setIsSidebarOpen(false); // 모바일인 경우 사이드바 닫기
+      handleLogout();
+    }
   };
 
   return (
@@ -20,7 +55,7 @@ const Navbar = () => {
           
           {/* --- 왼쪽 영역: 햄버거 버튼 & 로고 --- */}
           <div className="flex items-center space-x-4">
-            {/*  모바일에서만 보이는 햄버거 버튼 (md:hidden) */}
+            {/* 모바일에서만 보이는 햄버거 버튼 (md:hidden) */}
             <button 
               onClick={toggleSidebar}
               className="md:hidden p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
@@ -57,6 +92,13 @@ const Navbar = () => {
                 <Link to={"/mypage"} className="text-gray-700 dark:text-gray-300 hover:text-blue-500">
                   마이페이지
                 </Link>
+                {/*  데스크탑 레이아웃에도 로그아웃 버튼 배치 */}
+                <button 
+                  onClick={onLogoutClick}
+                  className="text-gray-700 dark:text-gray-300 hover:text-red-500 transition-colors text-left"
+                >
+                  로그아웃
+                </button>
               </>
             )}
 
@@ -67,7 +109,7 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* ---  사이드바 (모바일용) --- */}
+      {/* --- 사이드바 (모바일용) --- */}
       {/* 배경 딤 처리 (어둡게 변하는 부분) */}
       <div 
         className={`fixed inset-0 bg-black/50 z-30 transition-opacity duration-300 md:hidden ${
@@ -91,7 +133,13 @@ const Navbar = () => {
             {accessToken ? (
               <>
                 <Link to="/mypage" onClick={toggleSidebar} className="text-lg dark:text-white">마이페이지</Link>
-                <div className="pt-4 text-sm text-gray-500 underline">로그아웃</div>
+                
+                <button 
+                  onClick={onLogoutClick}
+                  className="pt-4 text-left text-sm text-gray-500 dark:text-gray-400 underline hover:text-red-500 transition-colors cursor-pointer"
+                >
+                  로그아웃
+                </button>
               </>
             ) : (
               <>
