@@ -9,7 +9,7 @@ export const LpCard = ({ lp }: { lp: any }) => (
   </div>
 );
 
-// 2. 스켈레톤 카드 (이미지 요구사항: 카드와 동일 크기 + animate-pulse)
+// 2. 스켈레톤 카드 
 export const LpCardSkeleton = () => (
   <div className="aspect-square bg-gray-700 rounded-lg animate-pulse" />
 );

@@ -1,3 +1,6 @@
+// src/pages/HomePage.tsx
+// 홈 페이지 컴포넌트로, LP 카드들의 무한 스크롤 리스트를 보여준다. 검색과 정렬 기능도 제공한다.
+// 각 카드 클릭 시 상세 페이지로 이동하며, 우측 하단의 플로팅 버튼을 클릭하면 LP 생성 모달이 열린다. 데이터 로딩 시에는 스켈레톤 UI를 보여준다.
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useInView } from "react-intersection-observer"; 
@@ -25,16 +28,19 @@ const HomePage = () => {
   } = useGetLPInfiniteList({ search, order });
 
   //  무한 스크롤 트리거용 훅
+  // useInView 훅: 화면의 특정 요소가 뷰포트에 들어왔는지 감지하는 훅으로, 무한 스크롤 구현에 자주 사용된다.
+  // ref: 감지할 요소에 할당하는 ref, inView: 요소가 뷰포트에 들어왔는지 여부를 나타내는 boolean 값
   const { ref, inView } = useInView();
 
   //  화면 하단 도달 시 다음 페이지 호출
   useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {
+    if (inView && hasNextPage && !isFetchingNextPage) {  // 요소가 뷰포트에 들어왔는지 확인, 다음 페이지가 있는지 확인, 이미 다음 페이지를 불러오는 중인지 확인
       fetchNextPage();
     }
   }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   //  데이터 평탄화 (flat)
+  //  useGetLPInfiniteList 훅에서 반환된 데이터는 페이지별로 나뉘어져 있기 때문에, 이를 하나의 배열로 평탄화하여 실제 렌더링에 사용한다.
   const allLps = data?.pages.flatMap((page) => page.data.data) || [];
 
   return (

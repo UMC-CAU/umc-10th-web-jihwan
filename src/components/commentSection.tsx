@@ -1,3 +1,5 @@
+// src/components/commentSection.tsx
+// LP 상세 페이지 내에서 댓글 목록을 보여주고, 댓글 작성/수정/삭제 기능을 담당하는 컴포넌트
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { axiosInstance } from "../apis/axios";
@@ -31,6 +33,9 @@ const CommentSection = ({ lpid }: CommentSectionProps) => {
   };
 
   // 1. 댓글 목록 조회 
+  // 서버의 느린 DB 반영 속도 때문에 화면이 롤백되는 현상을 원천 차단하기 위해,
+  // refetchOnWindowFocus와 refetchOnMount 옵션을 모두 false로 설정하여 
+  // 다른 탭에 갔다 와도, 컴포넌트가 다시 마운트되어도 백엔드 서버를 다시 찌르지 않도록 한다.
   const { data: rawData, isLoading } = useQuery({
     queryKey,
     queryFn: async () => {
@@ -46,6 +51,7 @@ const CommentSection = ({ lpid }: CommentSectionProps) => {
     refetchOnMount: false,
   });
 
+  // 서버 응답 데이터의 구조가 일관적이지 않을 수 있기 때문에 안전하게 댓글 배열을 추출하는 가드 함수를 만든다.
   const getSafeCommentsArray = (): Comment[] => {
     if (!rawData) return [];
     if (Array.isArray(rawData)) return rawData;
@@ -84,6 +90,7 @@ const CommentSection = ({ lpid }: CommentSectionProps) => {
 
       // 서버의 느린 반영 때문에 롤백되지 않도록 조회 갱신(invalidate)을 호출하지 않고, 
       // 프론트엔드 캐시 상태를 직접 갱신하여 그대로 반영시킨다
+      // validatedCommnet를 기존 댓글 목록의 맨 앞에 추가하는 형태로 캐시를 업데이트한다.
       queryClient.setQueryData(queryKey, (old: any) => {
         if (!old) return [validatedComment];
         if (Array.isArray(old)) return [validatedComment, ...old];
@@ -110,6 +117,9 @@ const CommentSection = ({ lpid }: CommentSectionProps) => {
       setEditingId(null);
       setEditInput("");
 
+      // 서버의 느린 반영 때문에 롤백되지 않도록 조회 갱신(invalidate)을 호출하지 않고,
+      // 프론트엔드 캐시 상태를 직접 갱신하여 그대로 반영시킨다
+      // commentId에 해당하는 댓글의 content만 업데이트하는 형태로 캐시를 업데이트한다.
       queryClient.setQueryData(queryKey, (old: any) => {
         const updateContent = (list: Comment[]) => list.map(c => c.id === commentId ? { ...c, content } : c);
         if (Array.isArray(old)) return updateContent(old);
@@ -127,6 +137,9 @@ const CommentSection = ({ lpid }: CommentSectionProps) => {
       return commentId;
     },
     onSuccess: (commentId) => {
+      // 서버의 느린 반영 때문에 롤백되지 않도록 조회 갱신(invalidate)을 호출하지 않고,
+      // 프론트엔드 캐시 상태를 직접 갱신하여 그대로 반영시킨다
+      // commentId에 해당하는 댓글을 목록에서 제거하는 형태로 캐시를 업데이트한다.
       queryClient.setQueryData(queryKey, (old: any) => {
         const deleteItem = (list: Comment[]) => list.filter(c => c.id !== commentId);
         if (Array.isArray(old)) return deleteItem(old);
@@ -138,6 +151,8 @@ const CommentSection = ({ lpid }: CommentSectionProps) => {
   });
 
   // 정렬 순서 가공
+  // 댓글 목록을 최신순 또는 오래된순으로 정렬하는 로직이다.
+  // createdAt을 기준으로 타임스탬프를 비교하여 정렬한다.
   const sortedComments = [...safeComments].sort((a, b) => {
     const timeA = new Date(a.createdAt).getTime();
     const timeB = new Date(b.createdAt).getTime();

@@ -1,4 +1,5 @@
 // src/apis/lp.ts
+// LP 관련 API 함수들을 모아둔 파일이다. LP 리스트 조회, 상세 조회, 생성, 수정, 삭제, 좋아요 토글 등의 기능을 담당한다.
 import type { PaginationDto } from "../types/common.ts";
 import { axiosInstance } from "./axios.ts";
 import type { ResponseLpListDto } from "../types/lp.ts";
@@ -19,7 +20,7 @@ export const getLpDetail = async (lpid: string) => {
   return data;
 };
 
-// 3. LP 생성 (✨ 이 부분을 깔끔하게 단일 파라미터 전달로 고정합니다)
+// 3. LP 생성 
 export const createLp = async (lpData: { 
   title: string; 
   content: string; 
@@ -27,7 +28,6 @@ export const createLp = async (lpData: {
   published: boolean; 
   tags: { name: string }[]; 
 }) => {
-  // ✅ 삼항 연산자 오타를 지우고, 아래와 같이 깨끗하게 주소 하나만 딱 적어줍니다.
   const response = await axiosInstance.post("http://localhost:8000/v1/lps", lpData);
   return response.data;
 };

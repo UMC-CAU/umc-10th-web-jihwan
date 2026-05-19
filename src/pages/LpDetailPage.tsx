@@ -1,4 +1,6 @@
 // src/pages/LpDetailPage.tsx
+// LP 상세 페이지 컴포넌트로, 선택된 LP의 상세 정보를 보여준다. 좋아요 기능과 댓글 섹션도 포함한다.
+// 좋아요 버튼은 클릭 시 즉시 UI에 반영되도록 낙관적 업데이트 방식으로 구현되어 있으며, 댓글 섹션은 별도의 컴포넌트로 분리하여 관리한다.
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useGetLpDetail } from "../hooks/queries/useGetLpDetail"; 
@@ -37,13 +39,13 @@ const LpDetailPage = () => {
 
   //  하트 클릭 시 브라우저 새로고침을 막고 화면 상태를 즉시 변조하는 핸들러
   const handleLikeClick = (e: React.MouseEvent) => {
-    e.preventDefault(); // 기본 이벤트 전파 전면 차단
+    e.preventDefault(); // 기본 이벤트 전파 전면 차단, 좋아요 버튼이 다른 클릭 이벤트(예: 카드 클릭)와 겹칠 때 충돌 방지
     
     // 1. 화면의 숫자와 하트 상태를 딜레이 없이 즉시 즉각 변경 (낙관적 UI 연출)
-    if (isLiked) {
+    if (isLiked) { // 이미 좋아요가 눌린 상태라면 클릭 시 좋아요 취소로 간주하여 숫자를 감소시키고 하트 색상을 비활성화한다.
       setLikesCount((prev) => Math.max(0, prev - 1));
       setIsLiked(false);
-    } else {
+    } else { // 좋아요가 눌리지 않은 상태라면 클릭 시 좋아요로 간주하여 숫자를 증가시키고 하트 색상을 활성화한다.
       setLikesCount((prev) => prev + 1);
       setIsLiked(true);
     }

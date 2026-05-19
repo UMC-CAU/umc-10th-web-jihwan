@@ -1,3 +1,5 @@
+// src/pages/LoginPage.tsx
+// 로그인 페이지 컴포넌트로, 이메일과 비밀번호 입력 폼을 제공한다. 입력값 검증과 로그인 API 요청을 처리하며, 로그인 성공 시 원래 접근하려던 페이지로 리다이렉트 시킨다.
 import { validateSignIn, type UserSignInformation } from "../utils/validate";
 import useForm from "../hooks/useForm";
 import { useAuth } from "../context/AuthContext";
@@ -15,7 +17,7 @@ const LoginPage = () => {
   useEffect(() => {
     // 이미 로그인된 상태라면 가려던 곳(from)으로 보냄
     if (accessToken) {
-      navigate(from, { replace: true });
+      navigate(from, { replace: true }); // replace: true 옵션은 로그인 페이지를 히스토리에서 제거하여 뒤로 가기 시 로그인 페이지로 돌아가지 않도록 한다.
     }
   }, [navigate, accessToken, from]);
 
@@ -30,14 +32,13 @@ const LoginPage = () => {
   const handleSubmit = async () => {
     try {
       await login(values);
-      //  2. 로그인 함수 실행 후, accessToken이 업데이트되면 useEffect가 감지하여 'from'으로 이동시킵니다.
-      // 만약 AuthContext에서 직접 window.location.href를 쓰고 있다면 navigate가 안 먹힐 수 있으니 
-      // Context 쪽의 이동 코드를 확인해보세요!
+      //  2. 로그인 함수 실행 후, accessToken이 업데이트되면 useEffect가 감지하여 'from'으로 이동
     } catch (error) {
       console.error(error);
     }
   };
 
+  // 3. 입력값 검증: 에러가 있거나 빈 값이 있으면 로그인 버튼 비활성화
   const isDisabled =
     Object.values(errors || {}).some((error) => error.length > 0) ||
     Object.values(values).some((value) => value === "");

@@ -1,12 +1,15 @@
+// src/components/Navbar.tsx
+// 네비게이션 바 컴포넌트로, 사이트의 상단에 고정되어 사용자 인증 상태에 따라 다른 메뉴를 보여준다.
+// 모바일에서는 햄버거 메뉴로 사이드바를 열어 추가 메뉴를 제공한다. 로그아웃 시에는 토큰 삭제, 캐시 초기화, 리다이렉트 등의 안전한 세션 종료 처리를 수행한다.
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { useMutation, useQueryClient } from "@tanstack/react-query"; // 👈 추가
+import { useMutation, useQueryClient } from "@tanstack/react-query"; 
 import { useAuth } from "../context/AuthContext";
 import hamburgerIcon from "../assets/hamburger-button.svg";
 
 const Navbar = () => {
   const { accessToken, user } = useAuth();
-  const queryClient = useQueryClient(); // 👈 추가
+  const queryClient = useQueryClient(); 
   
   // 사이드바 열림/닫힘 상태 관리
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -25,6 +28,7 @@ const Navbar = () => {
       localStorage.removeItem("accessToken");
 
       // 2. TanStack Query 캐시 전체 폭파 (보안 및 데이터 혼선 방지)
+      // TanStackQuery가 관리하는 메모리 캐시를 완전히 초기화해서 메모리가 남지 않게 한다.
       queryClient.clear();
 
       alert("로그아웃 되었습니다.");
@@ -50,102 +54,55 @@ const Navbar = () => {
 
   return (
     <>
-      <nav className="bg-white dark:bg-gray-900 shadow-md fixed w-full z-20">
+      {/* 고정 상단바 구역 */}
+      <nav className="bg-white dark:bg-gray-900 shadow-md fixed w-full z-50">
         <div className="flex items-center justify-between p-4">
           
-          {/* --- 왼쪽 영역: 햄버거 버튼 & 로고 --- */}
           <div className="flex items-center space-x-4">
-            {/* 모바일에서만 보이는 햄버거 버튼 (md:hidden) */}
             <button 
+              type="button"
               onClick={toggleSidebar}
-              className="md:hidden p-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
-            >
-              <img src={hamburgerIcon} alt="menu" className="w-8 h-8" />
-            </button>
+              className="p-1.5 hover:bg-gray-850 rounded-lg transition-colors cursor-pointer text-gray-400 hover:text-white">
+                <span className="text-xl font-bold">☰</span> 
+              </button>
 
-            <Link
-              to="/"
-              className="text-xl font-bold text-gray-900 dark:text-white"
-            >
+            <Link to="/" className="text-xl font-bold text-gray-900 dark:text-white">
               SpinningSpinning Dolimpan
             </Link>
           </div>
 
-          {/* --- 오른쪽 영역: 데스크탑용 메뉴 (md:flex / 큰 화면에서만 보임) --- */}
-          <div className="hidden md:flex items-center space-x-6">
-            {!accessToken && (
-              <>
-                <Link to={"/login"} className="text-gray-700 dark:text-gray-300 hover:text-blue-500">
-                  로그인
-                </Link>
-                <Link to={"/signup"} className="text-gray-700 dark:text-gray-300 hover:text-blue-500">
-                  회원가입
-                </Link>
-              </>
-            )}
-
+          {/* 우측 공통 메뉴 링크 구역 */}
+          <div className="flex items-center space-x-6">
+            <Link to={"/search"} className="text-gray-700 dark:text-gray-300 hover:text-blue-500">검색</Link>
             {accessToken && (
-              <>
-                <span className="text-gray-700 dark:text-gray-300">
-                  <span className="font-bold text-blue-500">{user?.name}</span> 님 반갑습니다.
-                </span>
-                <Link to={"/mypage"} className="text-gray-700 dark:text-gray-300 hover:text-blue-500">
-                  마이페이지
-                </Link>
-                {/*  데스크탑 레이아웃에도 로그아웃 버튼 배치 */}
-                <button 
-                  onClick={onLogoutClick}
-                  className="text-gray-700 dark:text-gray-300 hover:text-red-500 transition-colors text-left"
-                >
-                  로그아웃
-                </button>
-              </>
+              <button type="button" onClick={onLogoutClick} className="text-gray-700 dark:text-gray-300 hover:text-red-500 cursor-pointer">
+                로그아웃
+              </button>
             )}
-
-            <Link to={"/search"} className="text-gray-700 dark:text-gray-300 hover:text-blue-500">
-              검색
-            </Link>
           </div>
         </div>
       </nav>
 
-      {/* --- 사이드바 (모바일용) --- */}
-      {/* 배경 딤 처리 (어둡게 변하는 부분) */}
-      <div 
-        className={`fixed inset-0 bg-black/50 z-30 transition-opacity duration-300 md:hidden ${
-          isSidebarOpen ? "opacity-100 visible" : "opacity-0 invisible"
-        }`}
-        onClick={toggleSidebar}
-      />
-
-      {/* 사이드바 본체 */}
-      <aside className={`fixed top-0 left-0 z-40 h-full w-64 bg-white dark:bg-gray-900 shadow-2xl transform transition-transform duration-300 ease-in-out md:hidden ${
-        isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-      }`}>
-        <div className="p-6 flex flex-col space-y-6">
-          <h2 className="text-2xl font-bold dark:text-white">Menu</h2>
-          <hr className="border-gray-200 dark:border-gray-700" />
+      {/* 🚀 좌측 고정형 사이드바 (isSidebarOpen 상태에 따라 너비가 0초 만에 완벽 토글 제어됨) */}
+      <aside 
+        className="fixed top-16 left-0 h-[calc(100vh-4rem)] bg-[#0a0a0a] border-r border-gray-900 shadow-2xl transition-all duration-350 ease-in-out z-40 overflow-hidden"
+        style={{ width: isSidebarOpen ? "0px" : "240px" }} // 💡 true일 때 완전히 닫히도록(0px) 설정
+      >
+        <div className="p-6 flex flex-col space-y-5 w-56 text-gray-300">
+          <Link to="/" className="text-base hover:text-pink-500 transition-colors">🏠 찾기</Link>
+          <Link to="/mypage" className="text-base hover:text-pink-500 transition-colors">👤 마이페이지</Link>
           
-          <div className="flex flex-col space-y-4">
-            <Link to="/" onClick={toggleSidebar} className="text-lg dark:text-white">홈</Link>
-            <Link to="/search" onClick={toggleSidebar} className="text-lg dark:text-white">검색</Link>
-            
+          <div className="pt-8 border-t border-gray-900 flex flex-col space-y-2">
             {accessToken ? (
-              <>
-                <Link to="/mypage" onClick={toggleSidebar} className="text-lg dark:text-white">마이페이지</Link>
-                
-                <button 
-                  onClick={onLogoutClick}
-                  className="pt-4 text-left text-sm text-gray-500 dark:text-gray-400 underline hover:text-red-500 transition-colors cursor-pointer"
-                >
-                  로그아웃
-                </button>
-              </>
+              <button 
+                type="button" 
+                onClick={onLogoutClick} 
+                className="text-left text-xs text-gray-500 hover:text-red-400 underline cursor-pointer"
+              >
+                로그아웃
+              </button>
             ) : (
-              <>
-                <Link to="/login" onClick={toggleSidebar} className="text-lg dark:text-white">로그인</Link>
-                <Link to="/signup" onClick={toggleSidebar} className="text-lg dark:text-white">회원가입</Link>
-              </>
+              <Link to="/login" className="text-sm hover:text-pink-500">로그인</Link>
             )}
           </div>
         </div>

@@ -1,4 +1,6 @@
-import { useState, useRef } from "react";
+// src/pages/MyPage.tsx
+// 마이 페이지 컴포넌트로, 사용자 자신의 프로필 정보를 보여주고 수정할 수 있는 페이지이다.
+import { useState, useRef, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { axiosInstance } from "../apis/axios";
 
@@ -13,7 +15,6 @@ const MyPage = () => {
   const queryClient = useQueryClient();
   const queryKey = ["userProfile"];
 
-  // 에디트 모드 활성화 여부 상태
   const [isEditing, setIsEditing] = useState(false);
   const [nameInput, setNameInput] = useState("");
   const [bioInput, setBioInput] = useState("");
@@ -26,77 +27,98 @@ const MyPage = () => {
     return token ? { Authorization: `Bearer ${token}` } : {};
   };
 
-  // 1.  내 정보 조회 
-  const { data: profile, isLoading } = useQuery<UserProfile>({
+  // 1. 내 정보 조회
+  const { data: profile, isLoading } = useQuery<any>({
     queryKey,
     queryFn: async () => {
       const response = await axiosInstance.get("/v1/users/me", {
         headers: getAuthHeaders(),
       });
-      // 백엔드 데이터 구조 가공 처리
-      return response.data?.data || response.data || { name: "지환", bio: "", profileImage: "", email: "" };
+      return response.data;
     },
-    // 프로필 수정 후 다른 탭 갔다 와도 백엔드 옛날 데이터로 덮어쓰지 못하게 가드 처리
     refetchOnWindowFocus: false,
     refetchOnMount: false,
   });
 
-  // 2.  프로필 수정 Mutation 
+  // 2. 닉네임/프로필 변경 Mutation
+  // onMutate에서 낙관적 업데이트를 시도하여, 서버 응답을 기다리지 않고 즉시 UI에 변경 사항을 반영한다. 만약 서버 요청이 실패할 경우, 이전 상태로 롤백한다.
   const updateProfileMutation = useMutation({
     mutationFn: async (updatedData: { name: string; bio: string; profileImage: string }) => {
-      const response = await axiosInstance.patch("/v1/users/me", updatedData, {
+      const response = await axiosInstance.patch("/v1/users", updatedData, { 
         headers: getAuthHeaders(),
       });
-      return response.data?.data || response.data;
+      return response.data;
     },
-    onSuccess: (serverData) => {
-      //  Bio, 프로필 사진은 옵션이므로 비어있어도 저장이 가능하도록 처리됨
-      const validatedData: UserProfile = {
-        name: nameInput.trim(),
-        bio: bioInput.trim(),
-        profileImage: profileImage,
-        email: profile?.email || "",
-      };
+    // 기존 데이터가 { data: { name, bio ... } } 구조인지 확인하고 안전하게 분기 맵핑
+    onMutate: async (newData) => {
+      await queryClient.cancelQueries({ queryKey }); // cancelQueries로 현재 진행 중인 동일 쿼리를 취소하여 낙관적 업데이트와 충돌 방지
+      const previousProfile = queryClient.getQueryData<any>(queryKey); // 현재 캐시된 프로필 데이터를 백업하여 롤백 시 사용한다.
 
-      //  서버 조회를 새로 쏘지 않고프론트엔드 캐시를 직접 단단하게 고정
-      queryClient.setQueryData(queryKey, validatedData);
-      setIsEditing(false);
-      alert("프로필이 성공적으로 수정되었습니다!");
+      queryClient.setQueryData<any>(queryKey, (old) => {
+        if (!old) return old;
+
+        // 백엔드가 중첩 객체(old.data.name) 구조로 응답하는 폼인 경우
+        if (old.data) {
+          return {
+            ...old,
+            data: {
+              ...old.data,
+              name: newData.name,
+              bio: newData.bio,
+              profileImage: newData.profileImage,
+            }
+          };
+        }
+        
+        // 백엔드가 최상단 플랫 구조(old.name)로 바로 응답하는 폼인 경우
+        return {
+          ...old,
+          name: newData.name,
+          bio: newData.bio,
+          profileImage: newData.profileImage,
+        };
+      });
+
+      return { previousProfile };
     },
-    onError: (error: any) => {
-      // 백엔드 API 세팅이 덜 되어 에러가 나더라도 시연에 문제없도록 대체 작동 가동
-      const fallbackData: UserProfile = {
-        name: nameInput.trim(),
-        bio: bioInput.trim(),
-        profileImage: profileImage,
-        email: profile?.email || "jyj0719@gmail.com",
-      };
-      queryClient.setQueryData(queryKey, fallbackData);
+    // 통신 에러 발생 시 원인 분석 로그를 띄우고 이전 상태로 복구
+    onError: (err: any, newData, context) => {
+      console.error("프로필 수정 요청 실패 원인:", err.response?.data || err.message);
+      alert(`수정 실패: ${err.response?.data?.message || "서버 통신에 오류가 발생했습니다."}`);
+      if (context?.previousProfile) {
+        queryClient.setQueryData(queryKey, context.previousProfile); // 롤백: 이전 프로필 데이터로 복구하여 UI 일관성 유지
+      }
+    },
+    // 성공/실패 무관 최종 싱크 가동
+    // onSettled에서는 서버에서 최신 데이터를 다시 가져와서 캐시를 업데이트한다. 
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey });
+    },
+    onSuccess: () => { // 성공 시 사용자에게 알림을 띄우고 편집 모드를 종료한다.
       setIsEditing(false);
+      alert("프로필이 성공적으로 변경되었습니다!");
     }
   });
 
-  // 이미지 파일 선택 시 미리보기 데이터(Base64) 추출
+  // 파일 입력 핸들러로, 사용자가 새 프로필 이미지를 선택하면 FileReader를 사용하여 이미지 데이터를 읽고, 읽기가 완료되면 profileImage 상태를 업데이트하여 미리보기로 보여준다.
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setProfileImage(reader.result as string);
-      };
+      reader.onloadend = () => setProfileImage(reader.result as string);
       reader.readAsDataURL(file);
     }
   };
 
-  // 수정 모드 켜기
   const handleEditStart = () => {
-    setNameInput(profile?.name || "");
-    setBioInput(profile?.bio || "");
-    setProfileImage(profile?.profileImage || "");
+    // 백엔드 구조가 { data: { ... } } 인지 플랫 구조인지 가드 판별 후 세팅
+    const currentData = profile?.data ? profile.data : profile;
+    setNameInput(currentData?.name || "");
+    setBioInput(currentData?.bio || "");
+    setProfileImage(currentData?.profileImage || "");
     setIsEditing(true);
   };
 
-  // 수정 완료 버튼 클릭 (체크 표시)
   const handleSave = () => {
     if (!nameInput.trim()) {
       alert("이름은 필수 항목입니다.");
@@ -104,94 +126,73 @@ const MyPage = () => {
     }
     updateProfileMutation.mutate({
       name: nameInput.trim(),
-      bio: bioInput.trim(), // 빈 값이어도 정상 저장 지원
-      profileImage: profileImage, // 빈 값이어도 정상 저장 지원
+      bio: bioInput.trim(),
+      profileImage: profileImage,
     });
   };
 
   if (isLoading) return <div className="pt-24 text-center text-white">프로필 로딩 중...</div>;
+
+  // 렌더링용 유저 데이터 포인터 바인딩 가드
+  const userData = profile?.data ? profile.data : profile;
 
   return (
     <div className="min-h-screen bg-black pt-24 pb-12 flex justify-center px-4">
       <div className="w-full max-w-2xl bg-[#0a0a0a] border border-gray-950 text-white p-8 rounded-xl shadow-2xl h-fit">
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold">마이 페이지</h2>
-          {!isEditing && (
+          {isEditing && (
             <button 
-              onClick={handleEditStart}
-              className="text-xs bg-[#1e1f21] hover:bg-gray-800 text-gray-300 px-3 py-1.5 rounded-lg border border-gray-800 cursor-pointer transition-colors"
+              onClick={() => setIsEditing(false)} 
+              className="text-xs bg-black hover:bg-gray-900 text-gray-500 px-3 py-1.5 rounded-lg border border-gray-900 cursor-pointer"
             >
+              취소
+            </button>
+          )}
+          {!isEditing && (
+            <button onClick={handleEditStart} className="text-xs bg-[#1e1f21] hover:bg-gray-800 text-gray-300 px-3 py-1.5 rounded-lg border border-gray-800 cursor-pointer">
               프로필 설정
             </button>
           )}
         </div>
 
         <div className="bg-black border border-gray-900 rounded-xl p-8 flex items-center gap-8 relative shadow-inner">
-          
-          {/* 프로필 사진 구역 (클릭 시 이미지 변경 업로드 발동) */}
-          <div 
-            onClick={() => isEditing && fileInputRef.current?.click()}
-            className={`w-32 h-32 rounded-full bg-[#e0e0e0] flex items-center justify-center overflow-hidden flex-shrink-0 relative ${isEditing ? "cursor-pointer group border-2 border-pink-500" : ""}`}
-          >
-            {profileImage || profile?.profileImage ? (
-              <img src={profileImage || profile?.profileImage} alt="profile" className="w-full h-full object-cover" />
+          <div onClick={() => isEditing && fileInputRef.current?.click()} className={`w-32 h-32 rounded-full bg-[#e0e0e0] flex items-center justify-center overflow-hidden flex-shrink-0 relative ${isEditing ? "cursor-pointer group border-2 border-pink-500" : ""}`}>
+            {profileImage || userData?.profileImage ? (
+              <img src={profileImage || userData?.profileImage} alt="profile" className="w-full h-full object-cover" />
             ) : (
               <svg className="w-20 h-20 text-gray-400 mt-4" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
               </svg>
             )}
-            {isEditing && (
-              <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity text-[10px] text-white font-medium">
-                변경
-              </div>
-            )}
             <input type="file" ref={fileInputRef} onChange={handleFileChange} accept="image/*" className="hidden" />
           </div>
 
-          {/* 정보 텍스트 및 입력창 컴포넌트 조합 */}
           <div className="flex-1 space-y-3.5">
             {isEditing ? (
-              <div className="space-y-2.5 w-full pr-8">
-                {/* 이름 입력 인풋 */}
-                <input
-                  type="text"
-                  value={nameInput}
-                  onChange={(e) => setNameInput(e.target.value)}
-                  placeholder="이름을 입력해주세요"
-                  className="w-full bg-black border border-gray-800 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-gray-600"
-                />
-                {/* Bio 입력 인풋 (옵션형 구조 지원) */}
-                <input
-                  type="text"
-                  value={bioInput}
-                  onChange={(e) => setBioInput(e.target.value)}
-                  placeholder="Bio를 입력해주세요 (선택)"
-                  className="w-full bg-black border border-gray-800 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-gray-600"
-                />
+              <div className="space-y-2.5 w-full pr-16">
+                <input type="text" value={nameInput} onChange={(e) => setNameInput(e.target.value)} placeholder="이름을 입력해주세요" className="w-full bg-black border border-gray-800 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-pink-500 transition-colors" />
+                <input type="text" value={bioInput} onChange={(e) => setBioInput(e.target.value)} placeholder="Bio를 입력해주세요 (선택)" className="w-full bg-black border border-gray-800 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-pink-500 transition-colors" />
               </div>
             ) : (
               <div>
-                <h3 className="text-2xl font-bold tracking-tight text-gray-100 mb-1">{profile?.name || "김연진"}</h3>
-                <p className="text-sm text-gray-400 font-medium">{profile?.bio || "프론트 짱"}</p>
+                <h3 className="text-2xl font-bold tracking-tight text-gray-100 mb-1">{userData?.name || "지환"}</h3>
+                <p className="text-sm text-gray-400 font-medium">{userData?.bio || "소개를 입력해주세요"}</p>
               </div>
             )}
-
-            {/* 고정 유저 이메일 표기식 단추 */}
-            <div className="text-sm text-gray-300 font-normal pt-1">
-              {profile?.email || "kyj0719@gmail.com"}
-            </div>
+            <div className="text-sm text-gray-300 font-normal pt-1">{userData?.email || "jyj0719@gmail.com"}</div>
           </div>
 
           {isEditing && (
             <button 
-              onClick={handleSave}
-              className="absolute right-6 top-1/2 -translate-y-1/2 text-white hover:text-pink-500 transition-colors cursor-pointer text-xl"
-              title="저장"
+              type="button"
+              onClick={handleSave} 
+              className="absolute right-6 top-1/2 -translate-y-1/2 text-pink-500 hover:text-pink-400 font-bold text-lg bg-[#1e1f21] hover:bg-gray-800 border border-gray-800 w-10 h-10 rounded-full flex items-center justify-center shadow-md transition-all cursor-pointer"
+              title="저장하기"
             >
               ✔
             </button>
           )}
-
         </div>
       </div>
     </div>

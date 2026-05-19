@@ -1,3 +1,7 @@
+// src/layouts/HomeLayout.tsx
+// 홈 화면과 마이페이지 등 로그인 후 접근 가능한 페이지들의 공통 레이아웃 컴포넌트로, 사이드바와 상단 내비게이션 바를 포함한다.
+// 사이드바에서는 홈과 마이페이지로의 네비게이션을 제공하며, 상단 내비게이션 바에서는 현재 로그인한 사용자의 닉네임을 표시하고 로그아웃 버튼을 제공한다.
+// 또한, 회원탈퇴 기능을 위한 모달도 포함되어 있어 사용자가 쉽게 계정을 삭제할 수 있도록 한다.
 import { useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";

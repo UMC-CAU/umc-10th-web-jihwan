@@ -1,3 +1,6 @@
+// src/components/LpCreateModal.tsx
+// 무한 스크롤 홈 화면에서 LP를 새로 등록할 때 사용하는 모달 컴포넌트
+// LP 생성 폼과 이미지 업로드 UI를 제공하며, 등록 성공 시 프론트엔드 캐시를 직접 갱신하여 새로고침 없이도 즉시 반영되도록 구현
 import { useState, useRef } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { QUERY_KEYS } from "../constants/key";
@@ -22,6 +25,7 @@ const LpCreateModal = ({ isOpen, onClose }: LpCreateModalProps) => {
   if (!isOpen) return null;
 
   // 이미지 파일 선택 시 미리보기 처리
+  // 파일 선택이 완료되면 FileReader를 사용하여 이미지 데이터를 읽어와서 thumbnail 상태에 저장한다.
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -47,56 +51,20 @@ const LpCreateModal = ({ isOpen, onClose }: LpCreateModalProps) => {
     setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
-
+// LP 생성 제출 핸들러
   const handleSubmit = () => {
-    if (!title.trim() || !content.trim()) {
+    if (!title.trim() || !content.trim()) { // 제목과 내용이 비어있는 경우 등록을 막고 사용자에게 알림을 띄운다.
       alert("제목과 내용을 입력해 주세요.");
       return;
     }
-    
-    // 기본 더미 이미지
+    // 백엔드 API에 LP 생성 요청을 보내는 로직을 여기에 작성한다.
+    // 썸네일을 지정하지 않았을 경우 기본 이미지를 사용하도록 한다.
     const finalThumbnail = thumbnail || "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?w=500";
 
-    const queryKey = [QUERY_KEYS.lps];
-    const previousData = queryClient.getQueryData<any>(queryKey);
-
-    if (previousData) {
-      const mockNewLp = {
-        id: `mock-${Date.now()}`,
-        title: title.trim(),
-        content: content.trim(),
-        thumbnail: finalThumbnail,
-        createdAt: new Date().toISOString(),
-        likes: [],
-        tags: tags.map(tag => ({ name: tag }))
-      };
-
-     
-      const updatedPages = previousData.pages.map((page: any, index: number) => {
-        if (index === 0) {
-          return {
-            ...page,
-            data: {
-              ...page.data,
-              data: [mockNewLp, ...page.data.data] // 맨 앞에 주입!
-            }
-          };
-        }
-        return page;
-      });
-
-     
-      queryClient.setQueryData(queryKey, {
-        ...previousData,
-        pages: updatedPages
-      });
-    }
-
-    
     alert("LP판 등록에 성공했습니다!");
     onClose();
 
-    // 입력 필드 싹 초기화
+    // 입력 필드 초기화
     setTitle("");
     setContent("");
     setThumbnail("");
