@@ -7,7 +7,7 @@ export type CommonResponse<T> = {
     data: T
 }
 
-// ✅ 무한 스크롤 명세에 맞춰 구조 수정
+//  무한 스크롤 명세에 맞춰 구조 수정
 export type CursorBasedResponse<T> = {
     status:boolean;
     statusCode: number;
