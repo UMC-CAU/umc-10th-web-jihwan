@@ -20,12 +20,12 @@ axiosInstance.interceptors.request.use(
     (config) => {
         let token = localStorage.getItem(LOCAL_STORAGE_KEY.accessToken);
 
-        if (token && token.startsWith('"') && token.endsWith('"')) {
+        if (token && token.startsWith('"') && token.endsWith('"')) { // 토큰이 양쪽에 불필요한 따옴표로 감싸져 있는 경우 제거한다.
             token = token.slice(1, -1);
         }
 
         if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+            config.headers.Authorization = `Bearer ${token}`; // 모든 요청에 Authorization 헤더로 토큰을 자동 첨부한다.
         }
         return config;
     },
@@ -62,6 +62,7 @@ axiosInstance.interceptors.response.use(
             }
 
             // 1회차 재시도가 아닌 경우에만 토큰 갱신 시도
+            // 왜? 재발급 시도 중에도 401이 발생할 수 있는데, 이때 무한 루프에 빠지는 것을 방지하기 위해서다.
             if (!originalRequest._retry) {
                 originalRequest._retry = true;
 

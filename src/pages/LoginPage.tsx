@@ -3,7 +3,7 @@
 import { validateSignIn, type UserSignInformation } from "../utils/validate";
 import useForm from "../hooks/useForm";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate, useLocation } from "react-router-dom"; // ✅ useLocation 추가
+import { useNavigate, useLocation } from "react-router-dom"; 
 import { useEffect } from "react";
 
 const LoginPage = () => {
@@ -14,6 +14,7 @@ const LoginPage = () => {
   // 1. 이전 페이지 정보(from) 추출 (없으면 홈으로)
   const from = location.state?.from?.pathname || "/";
 
+  // 2. 로그인 상태(accessToken) 감지하여, 로그인 성공 시 'from'으로 이동
   useEffect(() => {
     // 이미 로그인된 상태라면 가려던 곳(from)으로 보냄
     if (accessToken) {
@@ -21,6 +22,7 @@ const LoginPage = () => {
     }
   }, [navigate, accessToken, from]);
 
+  // useForm 훅을 사용하여 입력값과 검증 상태를 관리한다. validateSignIn 함수를 통해 이메일과 비밀번호 형식을 검증한다.
   const { values, errors, touched, getInputProps } = useForm<UserSignInformation>({
     defaultValues: {
       email: "",
@@ -29,10 +31,10 @@ const LoginPage = () => {
     validate: validateSignIn,
   });
 
+  // 로그인 버튼 클릭 시 호출되는 함수로, 로그인 API 요청을 처리한다.
   const handleSubmit = async () => {
     try {
-      await login(values);
-      //  2. 로그인 함수 실행 후, accessToken이 업데이트되면 useEffect가 감지하여 'from'으로 이동
+      await login(values); // 로그인 API 요청을 보내고, 성공 시 토큰 저장과 사용자 정보 업데이트가 이루어진다. (useAuth의 login 함수 내부에서 처리)
     } catch (error) {
       console.error(error);
     }

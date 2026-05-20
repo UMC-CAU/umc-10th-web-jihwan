@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { axiosInstance } from "../apis/axios";
 
+// 사용자 프로필 정보 담는 인터페이스
 interface UserProfile {
   name: string;
   bio: string;
@@ -11,6 +12,7 @@ interface UserProfile {
   email: string;
 }
 
+// MyPage 컴포넌트는 useQuery를 사용하여 로그인한 사용자의 프로필 정보를 가져오고, useMutation을 사용하여 프로필 업데이트 기능을 구현한다.
 const MyPage = () => {
   const queryClient = useQueryClient();
   const queryKey = ["userProfile"];

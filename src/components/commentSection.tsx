@@ -85,7 +85,7 @@ const CommentSection = ({ lpid }: CommentSectionProps) => {
             id: `server-${Date.now()}`,
             content: commentInput,
             createdAt: new Date().toISOString(),
-            user: { name: "지환" }
+            user: { name: "지환" } // 실제로는 서버에서 반환된 사용자 정보로 대체되어야 하지만, 안전하게 기본값을 넣어준다.
           };
 
       // 서버의 느린 반영 때문에 롤백되지 않도록 조회 갱신(invalidate)을 호출하지 않고, 
@@ -102,7 +102,9 @@ const CommentSection = ({ lpid }: CommentSectionProps) => {
   });
 
   // 3. 댓글 수정 Mutation
-  const updateCommentMutation = useMutation({
+  // 댓글 수정 API는 엔드포인트가 일관적이지 않아서, 먼저 /v1/lps/{lpid}/comments/{commentId}로 시도하고, 
+  // 실패하면 /v1/comments/{commentId}로 재시도하는 형태로 구현한다.
+  const updateCommentMutation = useMutation({ 
     mutationFn: async ({ commentId, content }: { commentId: string; content: string }) => {
       const response = await axiosInstance.patch(
         `/v1/lps/${lpid}/comments/${commentId}`,
@@ -122,9 +124,9 @@ const CommentSection = ({ lpid }: CommentSectionProps) => {
       // commentId에 해당하는 댓글의 content만 업데이트하는 형태로 캐시를 업데이트한다.
       queryClient.setQueryData(queryKey, (old: any) => {
         const updateContent = (list: Comment[]) => list.map(c => c.id === commentId ? { ...c, content } : c);
-        if (Array.isArray(old)) return updateContent(old);
-        if (old?.data && Array.isArray(old.data)) return { ...old, data: updateContent(old.data) };
-        if (old?.data?.data && Array.isArray(old.data.data)) return { ...old, data: { ...old.data, data: updateContent(old.data.data) } };
+        if (Array.isArray(old)) return updateContent(old); // old가 배열 형태인 경우. 왜 old가 여러 형태인가? 서버 응답이 일관적이지 않아서 여러 형태로 가드해야 한다.
+        if (old?.data && Array.isArray(old.data)) return { ...old, data: updateContent(old.data) }; // old.data가 배열 형태인 경우
+        if (old?.data?.data && Array.isArray(old.data.data)) return { ...old, data: { ...old.data, data: updateContent(old.data.data) } }; // old.data.data가 배열 형태인 경우
         return old;
       });
     }
