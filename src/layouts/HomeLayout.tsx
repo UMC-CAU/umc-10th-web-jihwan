@@ -14,10 +14,11 @@ const HomeLayout = () => {
   const [isResignModalOpen, setIsResignModalOpen] = useState(false);
 
   //  마이페이지와 동일한 캐시 키를 동기화하여 닉네임 변경 시 내비바도 즉시 반영되도록 한다
+  const token = localStorage.getItem("accessToken"); // 토큰 가져오는 위치를 위로 올림
+
   const { data: profile } = useQuery({
     queryKey: ["userProfile"],
     queryFn: async () => {
-      const token = localStorage.getItem("accessToken");
       const response = await axiosInstance.get("/v1/users/me", {
         headers: token ? { Authorization: `Bearer ${token}` } : {},
       });
@@ -25,6 +26,7 @@ const HomeLayout = () => {
     },
     refetchOnWindowFocus: false,
     staleTime: Infinity, // 불필요한 재요청 차단
+    enabled: !!token, //  토큰이 존재할 때만(true) 이 쿼리를 실행하도록 가드를 세운다
   });
 
   const handleResignConfirm = () => {

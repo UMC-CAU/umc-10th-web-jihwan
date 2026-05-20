@@ -33,7 +33,29 @@ const protectedRoutes: RouteObject[] = [{
   ]
 }];
 
-const router = createBrowserRouter([...publicRoutes, ...protectedRoutes]);
+//const router = createBrowserRouter([...publicRoutes, ...protectedRoutes]);
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <HomeLayout />, // 전체 서비스의 기본 뼈대 레이아웃
+    errorElement: <NotFoundPage />,
+    children: [
+      // 🔓 [공개 구역] 로그인과 회원가입은 토큰이 없어도 100% 프리패스로 진입 가능합니다.
+      { path: "login", element: <LoginPage /> },
+      { path: "signup", element: <SignupPage /> },
+
+      // 🔒 [보안 구역] 홈 화면과 마이페이지, 상세 페이지를 통째로 가드 안으로 격리합니다.
+      {
+        element: <ProtectedLayout />,
+        children: [
+          { index: true, element: <HomePage /> }, // 🚀 HomePage를 이 안쪽으로 이동! 토큰 없이 자동 API 호출하는 것을 원천 봉쇄합니다.
+          { path: "mypage", element: <MyPage /> },
+          { path: "lp/:lpid", element: <LpDetailPage /> },
+        ],
+      },
+    ],
+  },
+]);
 export const queryClient = new QueryClient();
 
 function App() {
