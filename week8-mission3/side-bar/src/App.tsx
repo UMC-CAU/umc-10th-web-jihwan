@@ -1,0 +1,209 @@
+// src/App.tsx
+import "./App.css";
+import { HamburgerButton } from "./components/HamburgerButton"; // 🚀 Named Import 형식 일치
+import { Sidebar } from "./components/Sidebar";
+import { useSidebar } from "./hooks/useSidebar";
+
+function App() {
+  const {isOpen, toggle, close} = useSidebar(); 
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950">
+      <header className="fixed top-0 left-0 bg-white shadow-sm z-50 w-full">
+        <div className="max-w-7xl  px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center  h-16 gap-4">
+            
+            <HamburgerButton isOpen = {isOpen} onClick={toggle} />
+            
+            <h1 className="text-xl font-bold text-gray-900">LP 사이트</h1>
+          </div>
+        </div>
+      </header>
+      <Sidebar isOpen={isOpen} onClose={close} />
+      <h1 className="mt-20">
+        texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+         texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+          texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+           texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+            texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+             texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+              texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+               texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+
+                v
+                 texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                  texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                   texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                    texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                     texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                      texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                       texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttex
+                       texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+         texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+          texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+           texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+            texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+             texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+              texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+               texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+
+                v
+                 texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                  texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                   texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                    texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                     texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                      texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                       texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                       texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+         texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+          texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+           texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+            texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+             texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+              texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+               texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+
+                v
+                 texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                  texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                   texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                    texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                     texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                      texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                       texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                       texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+         texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+          texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+           texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+            texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+             texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+              texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+               texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+
+                v
+                 texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                  texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                   texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                    texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                     texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                      texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                       texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                       texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+         texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+          texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+           texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+            texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+             texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+              texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+               texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+
+                v
+                 texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                  texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                   texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                    texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                     texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                      texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                       texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                       texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+         texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+          texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+           texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+            texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+             texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+              texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+               texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+
+                v
+                 texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                  texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                   texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                    texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                     texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                      texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                       texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                       texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+         texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+          texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+           texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+            texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+             texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+              texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+               texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+
+                v
+                 texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                  texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                   texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                    texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                     texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                      texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                       texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                       texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+         texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+          texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+           texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+            texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+             texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+              texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+               texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+
+                v
+                 texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                  texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                   texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                    texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                     texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                      texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                       texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                       texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+         texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+          texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+           texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+            texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+             texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+              texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+               texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+
+                v
+                 texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                  texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                   texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                    texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                     texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                      texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                       texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                       texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+         texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+          texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+           texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+            texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+             texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+              texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+               texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+
+                v
+                 texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                  texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                   texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                    texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                     texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                      texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                       texttexttexttext texttexttexttexttexttexttexttexttexttexttexttexttexttext
+                       
+      </h1>
+    </div>
+  );
+}
+
+export default App;
