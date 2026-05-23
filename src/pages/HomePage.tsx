@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useInView } from "react-intersection-observer"; 
 import { useGetLPInfiniteList } from "../hooks/queries/useGetLpList.ts";
+import useThrottle from "../hooks/queries/useThrottle.ts"; // 🚀 useThrottle 훅 임포트
 import LpCreateModal from "../components/LpCreateModal.tsx";
 
 
@@ -32,12 +33,17 @@ const HomePage = () => {
   // ref: 감지할 요소에 할당하는 ref, inView: 요소가 뷰포트에 들어왔는지 여부를 나타내는 boolean 값
   const { ref, inView } = useInView();
 
+  //  바닥 감지(inView) 신호가 연속으로 들어올 때 주기적으로 필터링하도록 쓰로틀링 적용 (1초 주기)
+  const throttledInView = useThrottle<boolean>(inView, 1000);
+
   //  화면 하단 도달 시 다음 페이지 호출
   useEffect(() => {
-    if (inView && hasNextPage && !isFetchingNextPage) {  // 요소가 뷰포트에 들어왔는지 확인, 다음 페이지가 있는지 확인, 이미 다음 페이지를 불러오는 중인지 확인
+    //  의존성과 조건문을 기존 'inView'에서 쓰로틀링된 'throttledInView'로 교체하여 난사 방지
+    if (throttledInView && hasNextPage && !isFetchingNextPage) {  // 요소가 뷰포트에 들어왔는지 확인, 다음 페이지가 있는지 확인, 이미 다음 페이지를 불러오는 중인지 확인
+      console.log(" [Throttle] 1초 간격 통과 -> 추가 데이터 요청 실행");
       fetchNextPage();
     }
-  }, [inView, hasNextPage, isFetchingNextPage, fetchNextPage]);
+  }, [throttledInView, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   //  데이터 평탄화 (flat)
   //  useGetLPInfiniteList 훅에서 반환된 데이터는 페이지별로 나뉘어져 있기 때문에, 이를 하나의 배열로 평탄화하여 실제 렌더링에 사용한다.
@@ -61,7 +67,7 @@ const HomePage = () => {
 
       {/* 카드 그리드 레이아웃 */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {/*  초기 로딩 시 스켈레톤  */}
+        {/* 초기 로딩 시 스켈레톤  */}
         {isLoading && new Array(12).fill(0).map((_, i) => <LpCardSkeleton key={i} />)}
 
         {/* 실제 데이터 리스트 */}
@@ -85,13 +91,13 @@ const HomePage = () => {
           </Link>
         ))}
 
-        {/*  추가 데이터 로딩 시 하단 스켈레톤 (4개) */}
+        {/* 추가 데이터 로딩 시 하단 스켈레톤 (4개) */}
         {isFetchingNextPage && new Array(4).fill(0).map((_, i) => <LpCardSkeleton key={i} />)}
       </div>
 
-      {/*  관찰 대상 (바닥) */}
+      {/* 관찰 대상 (바닥) */}
       <div ref={ref} className="h-20" />
-      {/*  우측 하단 고정 플로팅 + 버튼 */}
+      {/* 우측 하단 고정 플로팅 + 버튼 */}
       <button 
         onClick={() => setIsModalOpen(true)}
         className="fixed bottom-6 right-6 w-14 h-14 bg-pink-500 hover:bg-pink-600 text-white rounded-full flex items-center justify-center text-3xl font-bold shadow-2xl transition-transform hover:scale-110 z-40 cursor-pointer"
@@ -99,7 +105,7 @@ const HomePage = () => {
         +
       </button>
 
-      {/*  LP 생성 모달 컴포넌트 연결 */}
+      {/* LP 생성 모달 컴포넌트 연결 */}
       <LpCreateModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </div>
   );

@@ -11,29 +11,9 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AuthProvider } from './context/AuthContext';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import LpDetailPage from './pages/LpDetailPage';
+import  ThrottlePage from './pages/ThrottlePage';
 
-const publicRoutes: RouteObject[] = [{
-    path: "/",
-    element: <HomeLayout/>,
-    errorElement: <NotFoundPage/>,
-    children: [
-      {index: true, element: <HomePage/>},
-      {path: 'login', element: <LoginPage/>},
-      {path: 'signup', element: <SignupPage/>},
-    ]
-}];
 
-const protectedRoutes: RouteObject[] = [{
-  path:"/",
-  element: <ProtectedLayout/>,
-  errorElement: <NotFoundPage/>,
-  children:[
-    { path:"mypage", element: <MyPage/> }, 
-    { path: "lp/:lpid", element: <LpDetailPage /> }
-  ]
-}];
-
-//const router = createBrowserRouter([...publicRoutes, ...protectedRoutes]);
 const router = createBrowserRouter([
   {
     path: "/",
@@ -43,12 +23,13 @@ const router = createBrowserRouter([
       // 🔓 [공개 구역] 로그인과 회원가입은 토큰이 없어도 100% 프리패스로 진입 가능합니다.
       { path: "login", element: <LoginPage /> },
       { path: "signup", element: <SignupPage /> },
+      { path: "throttle", element: <ThrottlePage /> },
 
       // 🔒 [보안 구역] 홈 화면과 마이페이지, 상세 페이지를 통째로 가드 안으로 격리합니다.
       {
         element: <ProtectedLayout />,
         children: [
-          { index: true, element: <HomePage /> }, // 🚀 HomePage를 이 안쪽으로 이동! 토큰 없이 자동 API 호출하는 것을 원천 봉쇄합니다.
+          { index: true, element: <HomePage /> }, 
           { path: "mypage", element: <MyPage /> },
           { path: "lp/:lpid", element: <LpDetailPage /> },
         ],
