@@ -4,17 +4,28 @@ import CartList from './components/CartList'
 import { Navbar } from './components/Navbar'
 import  store  from './store/store'
 import { PriceBox } from './components/PriceBox'
+import Modal from './components/Modal'
+import { useSelector } from './hooks/useCustomRedux'
+
+function AppContent() {
+  const { isOpen } = useSelector((state) => state.modal);
+
+  return (
+    <>
+      <Navbar />
+      <CartList />
+      <PriceBox />
+      {isOpen && <Modal />}
+    </>
+  )
+}
 
 function App() {
 
   return (
-    <>
-      <Provider store={store}>
-        <Navbar />
-        <CartList />
-        <PriceBox />
-      </Provider>
-    </>
+    <Provider store={store}>
+      <AppContent />
+    </Provider>
   )
 }
 

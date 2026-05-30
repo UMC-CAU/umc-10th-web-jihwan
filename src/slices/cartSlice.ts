@@ -1,3 +1,4 @@
+// slices/cartSlice
 import type { CartItems } from "../types/cart";
 import cartItems from "../constant/cartitems";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
