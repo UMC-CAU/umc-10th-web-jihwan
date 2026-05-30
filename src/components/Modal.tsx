@@ -1,9 +1,11 @@
 import { useDispatch } from "../hooks/useCustomRedux";
 import { closeModal } from "../slices/modalSlice";
 import { clearCart } from "../slices/cartSlice";
+import { useCartActions } from "../hooks/useCartStore";
 
 const Modal = () => {
   const dispatch = useDispatch();
+  const {clearCart} = useCartActions();
 
   return (
     <aside className="fixed top-0 left-0 w-full h-full bg-black/50 z-50 flex items-center justify-center">
@@ -12,7 +14,7 @@ const Modal = () => {
         <div className="flex justify-around">
           <button
             onClick={() => {
-              dispatch(clearCart());
+              clearCart();
               dispatch(closeModal());
             }}
             className="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
